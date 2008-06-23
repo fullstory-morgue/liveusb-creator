@@ -1,0 +1,21 @@
+Source: liveusb-creator
+Section: unknown
+Priority: extra
+Maintainer: Horst Tritremmel <hjt@sidux.com>
+Build-Depends: cdbs, debhelper (>= 6), python (>=2.4), python-all-dev (>=2.4), python-central (>=0.5)
+Standards-Version: 3.7.3
+XS-Python-Version: current
+
+Package: liveusb-creator
+Architecture: any
+Depends: ${python:Depends}, ${shlibs:Depends}, python-urlgrabber, python-qt4
+XB-Python-Version: ${python:Versions}
+Description: installing live operating systems on to USB flash drives
+ * Completely non-destructive install. 
+   There is no need to deal with formatting or partitioning your USB key.
+ * Supports downloading various sidux releases!
+ * Automatically detects all of your removable devices
+ * Persistent storage creation. This lets you to allocate extra space on your USB stick, 
+   allowing you to save files and make modifications to your live operating 
+   system that will persist after you reboot. This essentially lets you carry your own
+   personalized sidux with you at all times.

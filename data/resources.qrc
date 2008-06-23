@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="newPrefix" >
+    <file>pixmaps/liveusb-creator-refresh.png</file>
+    <file>pixmaps/liveusb-creator-header.png</file>
+  </qresource>
+</RCC>

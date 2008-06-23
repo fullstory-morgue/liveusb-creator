@@ -1,0 +1,3 @@
+#!/bin/sh -e
+exec /usr/bin/python /usr/share/pyshared/liveusb-creator/liveusb-creator.py
+

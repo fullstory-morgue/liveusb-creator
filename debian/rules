@@ -1,0 +1,86 @@
+#!/usr/bin/make -f
+# Sample debian/rules that uses debhelper.
+# GNU copyright 1997 to 1999 by Joey Hess.
+
+build: build-stamp
+build-stamp: 
+	dh_testdir
+	python setup.py -q build 
+	touch $@
+
+clean: 
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp install-stamp
+	rm -rf build
+	find . -name "*.pyc" | xargs rm -f
+	dh_clean
+
+install: install-stamp
+install-stamp: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+
+	python setup.py -q install --no-compile --prefix=debian/liveusb-creator/usr
+	touch install-stamp
+
+
+# Build architecture-independent files here.
+binary-indep: build install
+
+
+# Build architecture-dependent files here.
+binary-arch: install
+	dh_testdir
+	dh_testroot
+	dh_pycentral -p liveusb-creator
+	dh_pysupport -p liveusb-creator
+	dh_installchangelogs
+	dh_installdocs
+	dh_install
+	dh_installmenu
+	dh_desktop
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+
+create-icons:
+	# requires inkscape and imagemagick to be installed
+	@if [ ! -x /usr/bin/convert ]; then \
+		echo "ERROR: imagemagick not installed!" ; \
+		false ; \
+	fi
+	@if [ ! -x /usr/bin/inkscape ]; then \
+		echo "ERROR: inkscape not installed!" ; \
+		false ; \
+	fi
+	
+	# create XDG compatible icons from SVG
+	for i in 16 22 32 48 64 128; do \
+		mkdir -p "icons/hicolor/$${i}x$${i}/apps" ; \
+		inkscape --export-width=$${i} \
+			 --export-height=$${i} \
+			 --export-png="$(CURDIR)/icons/hicolor/$${i}x$${i}/apps/liveusb-creator.png" \
+				$(CURDIR)/icons/liveusb-creator.svg ; \
+	done
+	
+	# create XPM icons for the debian menu system
+	mkdir -p icons/pixmaps
+	convert icons/hicolor/32x32/apps/liveusb-creator.png icons/pixmaps/liveusb-creator.xpm
+	convert icons/hicolor/16x16/apps/liveusb-creator.png icons/pixmaps/liveusb-creator-16.xpm
+
+
+binary: binary-indep binary-arch
+.PHONY: build install clean binary-arch binary-indep binary
+
