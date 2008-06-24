@@ -7,5 +7,6 @@ liveusb-creator (001-1) unstable; urgency=low
   * popen command for penuuid changed 
   * creat persist fixed 
   * sidux icon to frame
+  * remove existing boot dir 
 
- -- Horst Tritremmel <hjt@sidux.com>  Tue, 24 Jun 2008 12:09:21 +0200
+ -- Horst Tritremmel <hjt@sidux.com>  Tue, 24 Jun 2008 13:16:59 +0200

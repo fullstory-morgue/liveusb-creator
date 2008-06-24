@@ -183,8 +183,10 @@ class LiveUSBCreator(object):
     def createPersistentOverlay(self):
         if self.overlay:
             self.log.info("Creating %sMB persistent overlay" % self.overlay)
+            if self.distro == "sidux":
+                self.popen('rm -rf %s' % self.getOverlay())
+
             if self.fstype == 'vfat':
-                print self.getOverlay()
                 # vfat apparently can't handle sparse files
                 self.popen('dd if=/dev/zero of=%s count=%d bs=1M'
                            % (self.getOverlay(), self.overlay))
@@ -221,25 +223,27 @@ gfxmenu /boot/message\n\
             if self.overlay > 0:
                 self.siduxOverlay = "persist=sidux/sidux-rw"
 
+            self.kernelconf = ""
             for f in self.bootfiles:
                 if f.startswith('vmlinuz'):
+                    print 'f: %s' % f
                     self.kernel = '-'.join(f.split('-')[1:])
                     self.kname  = '-'.join(f.split('-')[3:])
 
 
-                    self.grubconf = "\
+                    self.kernelconf = "\
 %s\n\
-title %s (USB)\n\
+title %s (USB) %s\n\
 kernel (hd0,0)/boot/vmlinuz-%s boot=fll fromhd=UUID=%s fromiso nointro quiet vga=791 %s %s\n\
 initrd (hd0,0)/boot/initrd.img-%s\n\
-" % (self.grubconf, self.kname, self.kernel, 
+" % (self.kernelconf, self.kname, self.kernel, self.kernel, 
                     self.penuuid, self.siduxOverlay, 
                     self.cheatcode, self.kernel)
 
 
             # write menu.lst
             menufile = file("%s/boot/grub/menu.lst" % self.dest, 'w')
-            menufile.write(self.grubconf)
+            menufile.write('%s\n%s' %(self.grubconf, self.kernelconf))
             menufile.close()
 
         else:
@@ -426,7 +430,9 @@ class LinuxLiveUSBCreator(LiveUSBCreator):
             if self.distro == "sidux":
                 """ copy the sidux iso to usbstick """
                 self.tmpdir = tmpdir
+                self.popen('rm -rf %s/boot' % self.dest)
                 self.popen('cp -rf %s/boot %s' % (tmpdir, self.dest))
+                self.popen('rm -rf %s/sidux.iso' % self.dest)
                 self.popen('cp -f %s %s/sidux.iso' % (self.iso, self.dest))
             else:
                 """ FEDORA """
