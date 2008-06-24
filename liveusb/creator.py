@@ -25,6 +25,7 @@ import shutil
 import sha
 import os
 import re
+import unicodedata
 
 from StringIO import StringIO
 from stat import ST_SIZE
@@ -137,7 +138,7 @@ class LiveUSBCreator(object):
             raise LiveUSBError("There was a problem executing the following "
                                "command: `%s`\nA more detailed error log has "
                                "been written to 'liveusb-creator.log'" % cmd)
-        return p
+        return p, out
 
     def verifyImage(self, progress=None):
         if self.distro == "sidux":
@@ -211,8 +212,9 @@ gfxmenu /boot/message\n\
 "
 
             # kernel
-            self.penuuid      = subprocess.Popen(['blkid', '-o', 'value', '-s', 'UUID', self.drive],
-                                    stdout=subprocess.PIPE).communicate()[0].rstrip()
+            p, out = self.popen('blkid -o value -s UUID %s' % self.drive)
+            self.penuuid = out
+
             self.siduxbootdir = ("%s%s" % (self.dest, "/boot"))
             self.bootfiles    = os.listdir(self.siduxbootdir)
             self.siduxOverlay = ""
@@ -228,7 +230,7 @@ gfxmenu /boot/message\n\
                     self.grubconf = "\
 %s\n\
 title %s (USB)\n\
-kernel (hd0,0)/boot/vmlinuz-%s boot=fll fromhd=UUID=%s fromiso=sidux.iso nointro quiet vga=791 %s %s\n\
+kernel (hd0,0)/boot/vmlinuz-%s boot=fll fromhd=UUID=%s fromiso nointro quiet vga=791 %s %s\n\
 initrd (hd0,0)/boot/initrd.img-%s\n\
 " % (self.grubconf, self.kname, self.kernel, 
                     self.penuuid, self.siduxOverlay, 
@@ -407,10 +409,10 @@ class LinuxLiveUSBCreator(LiveUSBCreator):
                 self.log.info("Setting label on %s to %s" % (self.drive,self.label))
                 try:
                     if self.fstype in ('vfat', 'msdos'):
-                        p = self.popen('/sbin/dosfslabel %s %s' % (self.drive,
+                        p, out = self.popen('/sbin/dosfslabel %s %s' % (self.drive,
                                                                self.label))
                     else:
-                        p = self.popen('/sbin/e2label %s %s' % (self.drive, self.label))
+                        p, out = self.popen('/sbin/e2label %s %s' % (self.drive, self.label))
                 except LiveUSBError, e:
                     self.log.error("Unable to change volume label: %s" % str(e))
                     self.label = None
@@ -425,7 +427,7 @@ class LinuxLiveUSBCreator(LiveUSBCreator):
                 """ copy the sidux iso to usbstick """
                 self.tmpdir = tmpdir
                 self.popen('cp -rf %s/boot %s' % (tmpdir, self.dest))
-                self.popen('cp -f %s %s/sidux.iso' % (self.iso, self.dest))
+                ###self.popen('cp -f %s %s/sidux.iso' % (self.iso, self.dest))
             else:
                 """ FEDORA """
                 tmpliveos = os.path.join(tmpdir, 'LiveOS')

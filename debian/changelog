@@ -2,5 +2,7 @@ liveusb-creator (001-1) unstable; urgency=low
 
   * Initial release
   * *.spec file removed
+  * coreutils, e2fsprogs to depends 
+  * fromiso instead of fromiso=sidux.iso
 
- -- Horst Tritremmel <hjt@sidux.com>  Tue, 24 Jun 2008 08:35:29 +0200
+ -- Horst Tritremmel <hjt@sidux.com>  Tue, 24 Jun 2008 10:29:25 +0200

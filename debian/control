@@ -8,7 +8,7 @@ XS-Python-Version: current
 
 Package: liveusb-creator
 Architecture: any
-Depends: ${python:Depends}, ${shlibs:Depends}, python-urlgrabber, python-qt4
+Depends: ${python:Depends}, ${shlibs:Depends}, coreutils, e2fsprogs, python-urlgrabber, python-qt4
 XB-Python-Version: ${python:Versions}
 Description: installing live operating systems on to USB flash drives
  * Completely non-destructive install. 
