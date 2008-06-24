@@ -193,7 +193,7 @@ class LiveUSBCreator(object):
                            % (self.getOverlay(), self.overlay))
 
             if self.distro == "sidux":
-                self.popen('echo "y" | /sbin/mkfs.ext2 %s'
+                self.popen('/sbin/mkfs.ext2 %s'
                            % self.getOverlay())
                 self.popen('tune2fs -c 0 %s'
                            % self.getOverlay())
@@ -213,7 +213,7 @@ gfxmenu /boot/message\n\
 
             # kernel
             p, out = self.popen('blkid -o value -s UUID %s' % self.drive)
-            self.penuuid = out
+            self.penuuid = out.replace('\n', '')
 
             self.siduxbootdir = ("%s%s" % (self.dest, "/boot"))
             self.bootfiles    = os.listdir(self.siduxbootdir)
