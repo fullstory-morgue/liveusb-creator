@@ -21,3 +21,13 @@ releases = (
     },
 )
 
+
+'''
+from urlgrabber import *
+url = "http://debian.tu-bs.de/project/sidux/release"
+fo = urlopen(url)
+data = fo.read()
+for i in data.split('"'):
+    if i.endswith('iso'):
+        print i
+'''

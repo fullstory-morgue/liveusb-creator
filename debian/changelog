@@ -10,6 +10,7 @@ liveusb-creator (0.0.1) unstable; urgency=low
   * sidux icon to frame
   * remove existing boot dir 
   * fixed *.egg-info file
+  * remove liveusb-creator wrapper
 
   [ Stefan Lippers-Hollmann ]
   * add myself to Uploaders.
@@ -25,4 +26,4 @@ liveusb-creator (0.0.1) unstable; urgency=low
   * fix lintial warnings/ errors.
   * fix path to liveusb-creator.
 
- -- Horst Tritremmel <hjt@sidux.com>  Tue, 24 Jun 2008 16:18:40 +0200
+ -- Horst Tritremmel <hjt@sidux.com>  Tue, 24 Jun 2008 16:36:10 +0200
