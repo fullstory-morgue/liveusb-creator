@@ -1,5 +1,6 @@
-liveusb-creator (001-1) unstable; urgency=low
+liveusb-creator (0.0.1) unstable; urgency=low
 
+  [ Horst Tritremmel ]
   * Initial release
   * *.spec file removed
   * coreutils, e2fsprogs to depends 
@@ -9,4 +10,18 @@ liveusb-creator (001-1) unstable; urgency=low
   * sidux icon to frame
   * remove existing boot dir 
 
- -- Horst Tritremmel <hjt@sidux.com>  Tue, 24 Jun 2008 13:16:59 +0200
+  [ Stefan Lippers-Hollmann ]
+  * add myself to Uploaders.
+  * section admin.
+  * bump standards version to 3.8.0 no changes necessary.
+  * drop bogus build-depends on cdbs.
+  * bump compat level to 7, adapt debhleper build-dep accordingly.
+  * drop bogus debian/dirs.
+  * minor adaptions to debian/copyright.
+  * there can only be one, python-central or python-support.
+  * coreutils and e2fsprogs are essential, don't list it as depends.
+  * indent long list items in long description properly.
+  * fix lintial warnings/ errors.
+  * fix path to liveusb-creator.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 24 Jun 2008 15:37:08 +0200

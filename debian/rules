@@ -22,8 +22,7 @@ install-stamp: build
 	dh_testroot
 	dh_clean -k
 	dh_installdirs
-
-
+	
 	python setup.py -q install --no-compile --prefix=debian/liveusb-creator/usr
 	touch install-stamp
 
@@ -37,7 +36,6 @@ binary-arch: install
 	dh_testdir
 	dh_testroot
 	dh_pycentral -p liveusb-creator
-	dh_pysupport -p liveusb-creator
 	dh_installchangelogs
 	dh_installdocs
 	dh_install
@@ -53,7 +51,6 @@ binary-arch: install
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
-
 
 create-icons:
 	# requires inkscape and imagemagick to be installed
@@ -80,7 +77,5 @@ create-icons:
 	convert icons/hicolor/32x32/apps/liveusb-creator.png icons/pixmaps/liveusb-creator.xpm
 	convert icons/hicolor/16x16/apps/liveusb-creator.png icons/pixmaps/liveusb-creator-16.xpm
 
-
 binary: binary-indep binary-arch
 .PHONY: build install clean binary-arch binary-indep binary
-
