@@ -427,7 +427,7 @@ class LinuxLiveUSBCreator(LiveUSBCreator):
                 """ copy the sidux iso to usbstick """
                 self.tmpdir = tmpdir
                 self.popen('cp -rf %s/boot %s' % (tmpdir, self.dest))
-                ###self.popen('cp -f %s %s/sidux.iso' % (self.iso, self.dest))
+                self.popen('cp -f %s %s/sidux.iso' % (self.iso, self.dest))
             else:
                 """ FEDORA """
                 tmpliveos = os.path.join(tmpdir, 'LiveOS')

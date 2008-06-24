@@ -4,5 +4,6 @@ liveusb-creator (001-1) unstable; urgency=low
   * *.spec file removed
   * coreutils, e2fsprogs to depends 
   * fromiso instead of fromiso=sidux.iso
+  * popen command for penuuid changed 
 
- -- Horst Tritremmel <hjt@sidux.com>  Tue, 24 Jun 2008 10:29:25 +0200
+ -- Horst Tritremmel <hjt@sidux.com>  Tue, 24 Jun 2008 11:01:15 +0200
