@@ -6,5 +6,6 @@ liveusb-creator (001-1) unstable; urgency=low
   * fromiso instead of fromiso=sidux.iso
   * popen command for penuuid changed 
   * creat persist fixed 
+  * sidux icon to frame
 
- -- Horst Tritremmel <hjt@sidux.com>  Tue, 24 Jun 2008 11:31:27 +0200
+ -- Horst Tritremmel <hjt@sidux.com>  Tue, 24 Jun 2008 12:09:21 +0200

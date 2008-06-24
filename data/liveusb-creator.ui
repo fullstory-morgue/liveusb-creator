@@ -19,8 +19,8 @@
    <string>sidux LiveUSB Creator</string>
   </property>
   <property name="windowIcon" >
-   <iconset>
-    <normaloff>:/sidux-icon.png</normaloff>:/sidux-icon.png</iconset>
+   <iconset resource="resources.qrc" >
+    <normaloff>:/newPrefix/pixmaps/liveusb-creator-16.xpm</normaloff>:/newPrefix/pixmaps/liveusb-creator-16.xpm</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_7" >
    <item row="0" column="0" colspan="3" >

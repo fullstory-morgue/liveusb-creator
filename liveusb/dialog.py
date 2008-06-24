@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'data/liveusb-creator.ui'
 #
-# Created: Fri Jun 20 10:28:56 2008
+# Created: Tue Jun 24 12:08:59 2008
 #      by: PyQt4 UI code generator 4.4.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -19,7 +19,7 @@ class Ui_Dialog(object):
         sizePolicy.setHeightForWidth(Dialog.sizePolicy().hasHeightForWidth())
         Dialog.setSizePolicy(sizePolicy)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/sidux-icon.png"),QtGui.QIcon.Normal,QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/newPrefix/pixmaps/liveusb-creator-16.xpm"),QtGui.QIcon.Normal,QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
         self.gridLayout_7 = QtGui.QGridLayout(Dialog)
         self.gridLayout_7.setObjectName("gridLayout_7")
