@@ -1,3 +1,9 @@
+liveusb-creator (0.0.3) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 27 Jun 2008 02:35:21 +0200
+
 liveusb-creator (0.0.2) unstable; urgency=low
 
   * depends on python-dbus
