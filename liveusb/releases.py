@@ -1,4 +1,6 @@
-releases = (
+
+'''
+ releases = (
     {
         'name': 'sidux-2008-02-kde-lite-i386',
         'url': 'http://debian.tu-bs.de/project/sidux/release/sidux-2008-02-erebos-kde-lite-i386-200806252044.iso',
@@ -45,10 +47,7 @@ if urlret == 'ok':
     data = fo.read()
     for i in data.split('"'):
         if i.endswith('iso'):
-            release = "%s{'url': '%s/%s', 'name': '%s'}, " % (release, url, i, i)
+            release = "%s{'url': '%s/%s', 'name': '%s'}, " % (release, url, i, '-'.join(i.split('-')[:-1]))
 
+    releases = eval(release)
 
-releases = (release)
-
-print releases
-'''
