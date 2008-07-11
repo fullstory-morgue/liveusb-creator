@@ -1,9 +1,5 @@
-liveusb-creator (0.0.4) UNRELEASED; urgency=low
+liveusb-creator (0.0.4) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Horst Tritremmel ]
   * changed to syslinux, some keys won't work with grub
   * we can use dosfslabel now from dosfstools (>=2.11-6)
   * depends on syslinux
