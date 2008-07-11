@@ -41,7 +41,7 @@ class LiveUSBCreator(object):
     """ An OS-independent parent class for Live USB Creators """
 
     iso = None          # the path to our live image
-    label = "sidux"     # if one doesn't already exist
+    label = "SIDUX"     # if one doesn't already exist
     fstype = None       # the format of our usb stick
     drives = {}         # {device: {'label': label, 'mount': mountpoint}}
     overlay = 0         # size in mb of our persisten overlay
@@ -58,6 +58,7 @@ class LiveUSBCreator(object):
     def __init__(self, opts):
         self.opts = opts
         self.setupLogger()
+        self.siduxOverlay = "persist=sidux/sidux-rw"
 
     def setupLogger(self):
         self.log = logging.getLogger(__name__)
@@ -200,11 +201,9 @@ class LiveUSBCreator(object):
                 self.popen('tune2fs -c 0 %s'
                            % self.getOverlay())
 
-    def updateConfigs(self):
-        if self.distro == "sidux":
-
-            # create grub menu.lst
-            self.grubconf = "\
+    def grubconf(self):
+        ''' create grub menu.lst '''
+        self.grubconf = "\
 default 0\n\
 timeout 10\n\
 color red/black light-red/black\n\
@@ -213,38 +212,146 @@ background 400000\n\
 gfxmenu /boot/message\n\
 "
 
-            # kernel
-            p, out = self.popen('blkid -o value -s UUID %s' % self.drive)
-            self.penuuid = out.replace('\n', '')
-
-            self.siduxbootdir = ("%s%s" % (self.dest, "/boot"))
-            self.bootfiles    = os.listdir(self.siduxbootdir)
+        # kernel
+        self.siduxbootdir = ("%s%s" % (self.dest, "/boot"))
+        self.bootfiles    = os.listdir(self.siduxbootdir)
+        if self.overlay == 0:
             self.siduxOverlay = ""
-            if self.overlay > 0:
-                self.siduxOverlay = "persist=sidux/sidux-rw"
 
-            self.kernelconf = ""
-            for f in self.bootfiles:
-                if f.startswith('vmlinuz'):
-                    print 'f: %s' % f
-                    self.kernel = '-'.join(f.split('-')[1:])
-                    self.kname  = '-'.join(f.split('-')[3:])
+        self.kernelconf = ""
+        for f in self.bootfiles:
+            if f.startswith('vmlinuz'):
+                print 'f: %s' % f
+                self.kernel = '-'.join(f.split('-')[1:])
+                self.kname  = '-'.join(f.split('-')[3:])
 
 
-                    self.kernelconf = "\
+                self.kernelconf = "\
 %s\n\
 title %s (USB) %s\n\
 kernel (hd0,0)/boot/vmlinuz-%s boot=fll fromhd=UUID=%s fromiso nointro quiet vga=791 %s %s\n\
 initrd (hd0,0)/boot/initrd.img-%s\n\
 " % (self.kernelconf, self.kname, self.kernel, self.kernel, 
-                    self.penuuid, self.siduxOverlay, 
-                    self.cheatcode, self.kernel)
+                self.penuuid, self.siduxOverlay, 
+                self.cheatcode.replace("persist", ""), self.kernel)
 
 
-            # write menu.lst
-            menufile = file("%s/boot/grub/menu.lst" % self.dest, 'w')
-            menufile.write('%s\n%s' %(self.grubconf, self.kernelconf))
-            menufile.close()
+        # write menu.lst
+        menufile = file("%s/boot/grub/menu.lst" % self.dest, 'w')
+        menufile.write('%s\n%s' %(self.grubconf, self.kernelconf))
+        menufile.close()
+
+
+    def syslinux(self):
+        """ Generate our syslinux.cfg """
+
+        # rename vmlinuz and initrd.img forsyslinux
+        self.siduxbootdir    = ("%s/boot"        % self.dest)
+        self.vmlinuzfile686  = ("%s/vmlinuz0"    % self.siduxbootdir)
+        self.initrdfile686   = ("%s/initrd0.img" % self.siduxbootdir)
+        self.vmlinuzfile64   = ("%s/vmlinuz1"    % self.siduxbootdir)
+        self.initrdfile64    = ("%s/initrd1.img" % self.siduxbootdir)
+
+        if os.path.isfile(self.vmlinuzfile686):
+            os.unlink(self.vmlinuzfile686)
+        if os.path.isfile(self.initrdfile686):
+            os.unlink(self.initrdfile686)
+        if os.path.isfile(self.vmlinuzfile64):
+            os.unlink(self.vmlinuzfile64)
+        if os.path.isfile(self.initrdfile64):
+            os.unlink(self.initrdfile64)
+
+        self.bootfiles = os.listdir(self.siduxbootdir)
+        for f in self.bootfiles:
+            if f.startswith('vmlinuz') and f.endswith('86'):
+                os.rename('%s/%s' % (self.siduxbootdir, f), '%s' % self.vmlinuzfile686)
+            if f.startswith('initrd.img') and f.endswith('86'):
+                os.rename('%s/%s' % (self.siduxbootdir, f), '%s' % self.initrdfile686)
+            if f.startswith('vmlinuz') and f.endswith('64'):
+                os.rename('%s/%s' % (self.siduxbootdir, f), '%s' % self.vmlinuzfile64)
+            if f.startswith('initrd.img') and f.endswith('64'):
+                os.rename('%s/%s' % (self.siduxbootdir, f), '%s' % self.initrdfile64)
+
+        # copy syslinux files
+        self.path = '%s%s' % (os.getcwd(), '/syslinux/')
+        if not os.path.isfile('%s/vesamenu.c32' % self.dest):
+            self.popen('cp /usr/share/liveusb-creator/syslinux/vesamenu.c32 %s/' % self.dest)
+        if not os.path.isfile('%s/splash.jpg' % self.dest):
+            self.popen('cp /usr/share/liveusb-creator/syslinux/splash.jpg %s/' % self.dest)
+
+
+        # persist
+        if self.getOverlay() == None or self.getOverlay() == "":
+            self.siduxOverlay = ""
+        elif self.overlay == 0:
+            self.siduxOverlay = ""
+
+        # syslinux.cfg
+        syslinux = file(os.path.join(self.dest, "syslinux.cfg"),'w')
+
+        # label for kernel i686 or/and amd64
+        self.label686 = "\
+label sidux i686\n\
+  menu label sidux i686\n\
+  menu default\n\
+  kernel boot/vmlinuz0\n\
+  append initrd=boot/initrd0.img boot=fll quiet vga=791 fromhd=UUID=%s fromiso %s %s\n\n\
+"  % (self.penuuid, self.siduxOverlay, self.cheatcode.replace("persist", ""))
+
+        self.label64 = "\
+label sidux amd64\n\
+  menu label sidux amd64\n\
+  kernel boot/vmlinuz1\n\
+  append initrd=boot/initrd1.img boot=fll quiet vga=791 fromhd=UUID=%s fromiso %s %s\n\
+"  % (self.penuuid, self.siduxOverlay, self.cheatcode.replace("persist", ""))
+
+
+        self.vmlinuzfile686  = ("%s/boot/vmlinuz0"  % self.dest)
+        self.vmlinuzfile64   = ("%s/boot/vmlinuz1"  % self.dest)
+
+        if not os.path.isfile(self.vmlinuzfile686):
+            # no i686 kernel found
+            self.label686 = ""
+            self.label64  = "%s  menu default\n" % self.label64
+        if not os.path.isfile(self.vmlinuzfile64):
+            # no amd64 kernel found
+            self.label64 = ""
+
+        # syslinux.cfg
+        self.syslinuxconf = "\
+default vesamenu.c32\n\
+timeout 150\n\
+\n\
+menu background splash.jpg\n\
+menu title Welcome to sidux!\n\
+menu color border 0 #ffffffff #00000000\n\
+menu color sel 7 #ffffffff #ff777777\n\
+menu color title 0 #ffffffff #00000000\n\
+menu color tabmsg 0 #ffffffff #00000000\n\
+menu color unsel 0 #ffffffff #00000000\n\
+menu color hotsel 0 #ff000000 #ffffffff\n\
+menu color hotkey 7 #ffffffff #ff000000\n\
+menu color timeout_msg 0 #ffffffff #00000000\n\
+menu color timeout 0 #ffffffff #00000000\n\
+menu color cmdline 0 #ffffffff #00000000\n\
+\n\
+%s\
+%s\
+" % (self.label686, self.label64)
+
+        syslinux.write(self.syslinuxconf)
+        syslinux.close()
+
+
+    def updateConfigs(self):
+        if self.distro == "sidux":
+            # get uuid from stick
+            p, out = self.popen('blkid -o value -s UUID %s' % self.drive)
+            self.penuuid = out.replace('\n', '')
+
+            # add grub
+            #self.grubconf()
+            self.syslinux()
 
         else:
             """ Generate our FEDORA syslinux.cfg """
@@ -401,25 +508,29 @@ class LinuxLiveUSBCreator(LiveUSBCreator):
             self.dest = None
 
     def verifyFilesystem(self):
-        if self.fstype not in ('vfat', 'msdos', 'ext2', 'ext3'):
-            raise LiveUSBError("Unsupported filesystem: %s" % self.fstype)
+        #if self.fstype not in ('vfat', 'msdos', 'ext2', 'ext3'):
+        if self.fstype not in ('vfat', 'msdos'):
+            #raise LiveUSBError("Unsupported filesystem: %s" % self.fstype)
+            raise LiveUSBError("Unsupported filesystem: %s\nPlease backup, "
+                               "format your USB key with the FAT filesystem\n"
+                               "and set a Partitionlabel.\n"
+                               "CODE: mkfs.vfat -n SIDUX /dev/sdXX\n"
+                               "pull and replug the device ..." %
+                               self.fstype)
+
         if self.drives[self.drive]['label']:
             self.label = self.drives[self.drive]['label']
         else:
-            if self.distro == "sidux":
-                pass
-            else:
-                """ FEDORA """
-                self.log.info("Setting label on %s to %s" % (self.drive,self.label))
-                try:
-                    if self.fstype in ('vfat', 'msdos'):
-                        p, out = self.popen('/sbin/dosfslabel %s %s' % (self.drive,
+            self.log.info("Setting label on %s to %s" % (self.drive,self.label))
+            try:
+                if self.fstype in ('vfat', 'msdos'):
+                    p, out = self.popen('/sbin/dosfslabel %s %s' % (self.drive,
                                                                self.label))
-                    else:
-                        p, out = self.popen('/sbin/e2label %s %s' % (self.drive, self.label))
-                except LiveUSBError, e:
-                    self.log.error("Unable to change volume label: %s" % str(e))
-                    self.label = None
+                else:
+                    p, out = self.popen('/sbin/e2label %s %s' % (self.drive, self.label))
+            except LiveUSBError, e:
+                self.log.error("Unable to change volume label: %s" % str(e))
+                self.label = None
 
     def extractISO(self):
         """ Extract self.iso to self.dest """
@@ -457,11 +568,18 @@ class LinuxLiveUSBCreator(LiveUSBCreator):
         if self.distro == "sidux":
             """ install the sidux grub """
             self.log.info("Installing bootloader")
+            #try:
+            #    self.popen('grub-install --recheck --no-floppy --root-directory="%s" "%s"' % 
+            #            (self.tmpdir, self.drive))
+            #except LiveUSBError, e:
+            #    self.log.error("grub-install failed: %s" % str(e))
             try:
-                self.popen('grub-install --recheck --no-floppy --root-directory="%s" "%s"' % 
-                        (self.tmpdir, self.drive))
+                self.popen('syslinux%s%s -d %s/boot %s' %  (force and ' -f' or ' ',
+                    safe and ' -s' or ' ',
+                    self.dest, self.drive))
             except LiveUSBError, e:
-                self.log.error("grub-install failed: %s" % str(e))
+                self.log.error("syslinux-install failed: %s" % str(e))
+
         else:
             """ Run syslinux to install the FEDORA bootloader on our devices """
             self.log.info("Installing bootloader")
