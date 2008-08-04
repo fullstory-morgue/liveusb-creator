@@ -1,9 +1,5 @@
-liveusb-creator (0.0.6) UNRELEASED; urgency=low
+liveusb-creator (0.0.6) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Horst Tritremmel ]
   * create persitent file bug fix
 
  -- Horst Tritremmel <hjt@sidux.com>  Mon, 04 Aug 2008 09:15:45 +0200
