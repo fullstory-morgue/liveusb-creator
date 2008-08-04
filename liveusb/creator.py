@@ -184,6 +184,7 @@ class LiveUSBCreator(object):
     def createPersistentOverlay(self):
         if self.overlay:
             self.log.info("Creating %sMB persistent overlay" % self.overlay)
+
             if self.distro == "sidux":
                 self.popen('rm -rf %s' % self.getOverlay())
 
@@ -191,15 +192,14 @@ class LiveUSBCreator(object):
                 # vfat apparently can't handle sparse files
                 self.popen('dd if=/dev/zero of=%s count=%d bs=1M'
                            % (self.getOverlay(), self.overlay))
+                pass
             else:
                 self.popen('dd if=/dev/zero of=%s count=1 bs=1M seek=%d'
                            % (self.getOverlay(), self.overlay))
 
             if self.distro == "sidux":
-                self.popen('/sbin/mkfs.ext2 %s'
-                           % self.getOverlay())
-                self.popen('tune2fs -c 0 %s'
-                           % self.getOverlay())
+                self.popen('LANG=C && echo y | mkfs.ext2 %s'    % self.getOverlay())
+                self.popen('tune2fs -c 0 %s' % self.getOverlay())
 
     def grubconf(self):
         ''' create grub menu.lst '''
