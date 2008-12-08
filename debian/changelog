@@ -1,3 +1,9 @@
+liveusb-creator (0.0.8) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 08 Dec 2008 22:53:42 +0100
+
 liveusb-creator (0.0.7) unstable; urgency=low
 
   * make lintian happy and depend on ${misc:Depends}.
