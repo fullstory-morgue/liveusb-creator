@@ -229,11 +229,11 @@ gfxmenu /boot/message\n\
                 self.kernelconf = "\
 %s\n\
 title %s (USB) %s\n\
-kernel (hd0,0)/boot/vmlinuz-%s boot=fll fromhd=UUID=%s fromiso nointro quiet vga=791 %s %s\n\
+kernel (hd0,0)/boot/vmlinuz-%s boot=fll fromhd=UUID=%s fromiso nointro quiet %s %s %s\n\
 initrd (hd0,0)/boot/initrd.img-%s\n\
 " % (self.kernelconf, self.kname, self.kernel, self.kernel, 
-                self.penuuid, self.siduxOverlay, 
-                self.cheatcode.replace("persist", ""), self.kernel)
+                self.penuuid, self.vga, self.siduxOverlay, 
+                self.cheatcode, self.kernel)
 
 
         # write menu.lst
@@ -295,15 +295,15 @@ label sidux i686\n\
   menu label sidux i686\n\
   menu default\n\
   kernel boot/vmlinuz0\n\
-  append initrd=boot/initrd0.img boot=fll quiet vga=791 fromhd=UUID=%s fromiso %s %s\n\n\
-"  % (self.penuuid, self.siduxOverlay, self.cheatcode.replace("persist", ""))
+  append initrd=boot/initrd0.img boot=fll quiet %s fromhd=UUID=%s fromiso %s %s\n\n\
+"  % (self.vga, self.penuuid, self.siduxOverlay, self.cheatcode)
 
         self.label64 = "\
 label sidux amd64\n\
   menu label sidux amd64\n\
   kernel boot/vmlinuz1\n\
-  append initrd=boot/initrd1.img boot=fll quiet vga=791 fromhd=UUID=%s fromiso %s %s\n\
-"  % (self.penuuid, self.siduxOverlay, self.cheatcode.replace("persist", ""))
+  append initrd=boot/initrd1.img boot=fll quiet %s fromhd=UUID=%s fromiso %s %s\n\
+"  % (self.vga, self.penuuid, self.siduxOverlay, self.cheatcode)
 
 
         self.vmlinuzfile686  = ("%s/boot/vmlinuz0"  % self.dest)

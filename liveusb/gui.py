@@ -300,7 +300,22 @@ class LiveUSBDialog(QtGui.QDialog, Ui_Dialog):
         if self.live.overlay > 0 and self.live.overlay < 100:
             self.live.overlay = 100
         self.live.drive = self.getSelectedDrive()
+
+        # sidux cheatcode handling
         self.live.cheatcode = self.cheatcode.text().replace("persist", "")
+        # if persist overlay > 0 remove toram cheatcode
+        if self.live.overlay > 0:
+            self.live.cheatcode = self.live.cheatcode.replace("toram", "")
+        # vga cheatcode
+        self.live.vga = "vga=791"
+        for self.v in self.live.cheatcode.split(" "):
+            if "vga" in self.v:
+                self.live.cheatcode = self.live.cheatcode.replace(self.v, "")
+                try:
+                    self.live.vga = "vga=%s" % (int(self.v.split("=")[1]))
+                except:
+                    pass
+
         try:
             self.live.mountDevice()
         except LiveUSBError, e:
@@ -378,7 +393,7 @@ class LiveUSBDialog(QtGui.QDialog, Ui_Dialog):
                             "of your livecd.  You may have better luck if "
                             "you move your ISO to the root of your drive "
                             "(ie: C:\)")
-                
+
             self.live.log.info("ISO selected: %s" % repr(self.live.iso))
             self.textEdit.append(os.path.basename(self.live.iso) + ' selected')
 

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'data/liveusb-creator.ui'
 #
-# Created: Tue Jun 24 12:08:59 2008
+# Created: Tue Dec 16 10:52:36 2008
 #      by: PyQt4 UI code generator 4.4.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(448,500)
+        Dialog.resize(448,510)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -345,7 +345,7 @@ class Ui_Dialog(object):
         sizePolicy.setHeightForWidth(self.cheatcode.sizePolicy().hasHeightForWidth())
         self.cheatcode.setSizePolicy(sizePolicy)
         self.cheatcode.setObjectName("cheatcode")
-        self.gridLayout_5.addWidget(self.cheatcode,0,0,1,1)
+        self.gridLayout_5.addWidget(self.cheatcode,1,0,1,1)
         self.label_3 = QtGui.QLabel(self.groupBox_3)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -355,7 +355,10 @@ class Ui_Dialog(object):
         self.label_3.setOpenExternalLinks(True)
         self.label_3.setTextInteractionFlags(QtCore.Qt.TextBrowserInteraction)
         self.label_3.setObjectName("label_3")
-        self.gridLayout_5.addWidget(self.label_3,1,0,1,1)
+        self.gridLayout_5.addWidget(self.label_3,2,0,1,1)
+        self.label_4 = QtGui.QLabel(self.groupBox_3)
+        self.label_4.setObjectName("label_4")
+        self.gridLayout_5.addWidget(self.label_4,0,0,1,1)
         self.gridLayout_7.addWidget(self.groupBox_3,3,0,1,3)
         self.textEdit = QtGui.QTextEdit(Dialog)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Preferred)
@@ -368,13 +371,13 @@ class Ui_Dialog(object):
         self.textEdit.setFont(font)
         self.textEdit.setReadOnly(True)
         self.textEdit.setObjectName("textEdit")
-        self.gridLayout_7.addWidget(self.textEdit,4,0,1,3)
+        self.gridLayout_7.addWidget(self.textEdit,5,0,1,3)
         self.progressBar = QtGui.QProgressBar(Dialog)
         self.progressBar.setProperty("value",QtCore.QVariant(0))
         self.progressBar.setObjectName("progressBar")
-        self.gridLayout_7.addWidget(self.progressBar,5,0,1,3)
+        self.gridLayout_7.addWidget(self.progressBar,7,0,1,3)
         spacerItem = QtGui.QSpacerItem(88,20,QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Minimum)
-        self.gridLayout_7.addItem(spacerItem,6,0,1,1)
+        self.gridLayout_7.addItem(spacerItem,8,0,1,1)
         self.startButton = QtGui.QPushButton(Dialog)
         self.startButton.setEnabled(True)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Preferred)
@@ -383,9 +386,9 @@ class Ui_Dialog(object):
         sizePolicy.setHeightForWidth(self.startButton.sizePolicy().hasHeightForWidth())
         self.startButton.setSizePolicy(sizePolicy)
         self.startButton.setObjectName("startButton")
-        self.gridLayout_7.addWidget(self.startButton,6,1,1,1)
+        self.gridLayout_7.addWidget(self.startButton,8,1,1,1)
         spacerItem1 = QtGui.QSpacerItem(118,20,QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Minimum)
-        self.gridLayout_7.addItem(spacerItem1,6,2,1,1)
+        self.gridLayout_7.addItem(spacerItem1,8,2,1,1)
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -415,6 +418,7 @@ class Ui_Dialog(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"http://manual.sidux.com\"><span style=\" text-decoration: underline; color:#0000ff;\">http://manual.sidux.com</span></a></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_4.setText(QtGui.QApplication.translate("Dialog", "netbook users please use cheatcode <b>vga=788</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.textEdit.setWhatsThis(QtGui.QApplication.translate("Dialog", "This is the status console, where all messages get written to.", None, QtGui.QApplication.UnicodeUTF8))
         self.progressBar.setWhatsThis(QtGui.QApplication.translate("Dialog", "This is the progress bar that will indicate how far along in the LiveUSB creation process you are", None, QtGui.QApplication.UnicodeUTF8))
         self.startButton.setWhatsThis(QtGui.QApplication.translate("Dialog", "This button will begin the LiveUSB creation process.  This entails optionally downloading a release (if an existing one wasn\'t selected),  extracting the ISO to the USB device, creating the persistent overlay, and installing the bootloader.", None, QtGui.QApplication.UnicodeUTF8))

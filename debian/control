@@ -21,6 +21,7 @@ Depends: ${misc:Depends},
          dosfstools (>=2.11-6),
          syslinux,
          mtools
+Suggests: pyqt4-dev-tools
 XB-Python-Version: ${python:Versions}
 Description: installing live operating systems on to USB flash drives
  liveusb-creator offers the following features:
