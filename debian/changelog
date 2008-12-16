@@ -6,8 +6,10 @@ liveusb-creator (0.0.8) UNRELEASED; urgency=low
   [ Horst Tritremmel ]
   * remove toram cheat if persist is enabled
   * vga=788 cheat info for netbook users added 
+  * new splash.jpg for syslinux 
+  * Suggests pyqt4-dev-tools in debian/control added
 
- -- Horst Tritremmel <hjt@sidux.com>  Tue, 16 Dec 2008 12:31:06 +0100
+ -- Horst Tritremmel <hjt@sidux.com>  Tue, 16 Dec 2008 12:34:23 +0100
 
 liveusb-creator (0.0.7) unstable; urgency=low
 
