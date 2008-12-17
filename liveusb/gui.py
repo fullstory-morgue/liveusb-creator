@@ -394,7 +394,8 @@ class LiveUSBDialog(QtGui.QDialog, Ui_Dialog):
                             "you move your ISO to the root of your drive "
                             "(ie: C:\)")
 
-            self.live.log.info("ISO selected: %s" % repr(self.live.iso))
+            #self.live.log.info("ISO selected: %s" % repr(self.live.iso))
+	    self.live.output.write("ISO selected: %s" % repr(self.live.iso))
             self.textEdit.append(os.path.basename(self.live.iso) + ' selected')
 
     def terminate(self):

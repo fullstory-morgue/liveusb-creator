@@ -126,7 +126,7 @@ class LiveUSBCreator(object):
         @param cmd: The commandline to execute.  Either a string or a list.
         @param kwargs: Extra arguments to pass to subprocess.Popen
         """
-        self.log.info(cmd)
+        #self.log.info(cmd)
         self.output.write(cmd)
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE, stdin=subprocess.PIPE,
@@ -183,10 +183,13 @@ class LiveUSBCreator(object):
 
     def createPersistentOverlay(self):
         if self.overlay:
-            self.log.info("Creating %sMB persistent overlay" % self.overlay)
+            #self.log.info("Creating %sMB persistent overlay" % self.overlay)
+	    self.output.write("Creating %sMB persistent overlay" % self.overlay)
 
             if self.distro == "sidux":
-                self.popen('rm -rf %s' % self.getOverlay())
+                #self.popen('rm -rf %s' % self.getOverlay())
+                if os.path.isfile(self.getOverlay()):
+                    os.unlink(self.getOverlay())
 
             if self.fstype == 'vfat':
                 # vfat apparently can't handle sparse files
@@ -196,51 +199,14 @@ class LiveUSBCreator(object):
             else:
                 self.popen('dd if=/dev/zero of=%s count=1 bs=1M seek=%d'
                            % (self.getOverlay(), self.overlay))
-
+            
             if self.distro == "sidux":
-                self.popen('LANG=C && echo y | mkfs.ext2 %s'    % self.getOverlay())
-                self.popen('tune2fs -c 0 %s' % self.getOverlay())
-
-    def grubconf(self):
-        ''' create grub menu.lst '''
-        self.grubconf = "\
-default 0\n\
-timeout 10\n\
-color red/black light-red/black\n\
-foreground EE0000\n\
-background 400000\n\
-gfxmenu /boot/message\n\
-"
-
-        # kernel
-        self.siduxbootdir = ("%s%s" % (self.dest, "/boot"))
-        self.bootfiles    = os.listdir(self.siduxbootdir)
-        if self.overlay == 0:
-            self.siduxOverlay = ""
-
-        self.kernelconf = ""
-        for f in self.bootfiles:
-            if f.startswith('vmlinuz'):
-                print 'f: %s' % f
-                self.kernel = '-'.join(f.split('-')[1:])
-                self.kname  = '-'.join(f.split('-')[3:])
-
-
-                self.kernelconf = "\
-%s\n\
-title %s (USB) %s\n\
-kernel (hd0,0)/boot/vmlinuz-%s boot=fll fromhd=UUID=%s fromiso nointro quiet %s %s %s\n\
-initrd (hd0,0)/boot/initrd.img-%s\n\
-" % (self.kernelconf, self.kname, self.kernel, self.kernel, 
-                self.penuuid, self.vga, self.siduxOverlay, 
-                self.cheatcode, self.kernel)
-
-
-        # write menu.lst
-        menufile = file("%s/boot/grub/menu.lst" % self.dest, 'w')
-        menufile.write('%s\n%s' %(self.grubconf, self.kernelconf))
-        menufile.close()
-
+                import sys
+                if sys.platform[:3].lower() == "win":
+                    self.popen('Mke2fs -b 1024 %s' % self.getOverlay().replace("/", "\\") )
+                else:
+                    self.popen('LANG=C && echo y | mkfs.ext2 %s'    % self.getOverlay())
+                    self.popen('tune2fs -c 0 %s' % self.getOverlay())
 
     def syslinux(self):
         """ Generate our syslinux.cfg """
@@ -272,14 +238,6 @@ initrd (hd0,0)/boot/initrd.img-%s\n\
             if f.startswith('initrd.img') and f.endswith('64'):
                 os.rename('%s/%s' % (self.siduxbootdir, f), '%s' % self.initrdfile64)
 
-        # copy syslinux files
-        self.path = '%s%s' % (os.getcwd(), '/syslinux/')
-        if not os.path.isfile('%s/vesamenu.c32' % self.dest):
-            self.popen('cp /usr/share/liveusb-creator/syslinux/vesamenu.c32 %s/' % self.dest)
-        if not os.path.isfile('%s/splash.jpg' % self.dest):
-            self.popen('cp /usr/share/liveusb-creator/syslinux/splash.jpg %s/' % self.dest)
-
-
         # persist
         if self.getOverlay() == None or self.getOverlay() == "":
             self.siduxOverlay = ""
@@ -296,14 +254,14 @@ label sidux i686\n\
   menu default\n\
   kernel boot/vmlinuz0\n\
   append initrd=boot/initrd0.img boot=fll quiet %s fromhd=UUID=%s fromiso %s %s\n\n\
-"  % (self.vga, self.penuuid, self.siduxOverlay, self.cheatcode)
+"  % (self.vga, self.uuid, self.siduxOverlay, self.cheatcode)
 
         self.label64 = "\
 label sidux amd64\n\
   menu label sidux amd64\n\
   kernel boot/vmlinuz1\n\
   append initrd=boot/initrd1.img boot=fll quiet %s fromhd=UUID=%s fromiso %s %s\n\
-"  % (self.vga, self.penuuid, self.siduxOverlay, self.cheatcode)
+"  % (self.vga, self.uuid, self.siduxOverlay, self.cheatcode)
 
 
         self.vmlinuzfile686  = ("%s/boot/vmlinuz0"  % self.dest)
@@ -345,14 +303,8 @@ menu color cmdline 0 #ffffffff #00000000\n\
 
     def updateConfigs(self):
         if self.distro == "sidux":
-            # get uuid from stick
-            p, out = self.popen('blkid -o value -s UUID %s' % self.drive)
-            self.penuuid = out.replace('\n', '')
-
-            # add grub
-            #self.grubconf()
+            # add syslinux
             self.syslinux()
-
         else:
             """ Generate our FEDORA syslinux.cfg """
             isolinux = file(os.path.join(self.dest, "isolinux", "isolinux.cfg"),'r')
@@ -376,7 +328,8 @@ menu color cmdline 0 #ffffffff #00000000\n\
         for d in [self.getLiveOS(), os.path.join(self.dest, 'syslinux'),
                   os.path.join(self.dest, 'isolinux')]:
             if os.path.exists(d):
-                self.log.info("Deleting " + d)
+                #self.log.info("Deleting " + d)
+		self.output.write("Deleting " + d)
                 try:
                     shutil.rmtree(d)
                 except OSError, e:
@@ -521,7 +474,8 @@ class LinuxLiveUSBCreator(LiveUSBCreator):
         if self.drives[self.drive]['label']:
             self.label = self.drives[self.drive]['label']
         else:
-            self.log.info("Setting label on %s to %s" % (self.drive,self.label))
+            #self.log.info("Setting label on %s to %s" % (self.drive,self.label))
+	    self.output.write("Setting label on %s to %s" % (self.drive,self.label))
             try:
                 if self.fstype in ('vfat', 'msdos'):
                     p, out = self.popen('/sbin/dosfslabel %s %s' % (self.drive,
@@ -535,7 +489,8 @@ class LinuxLiveUSBCreator(LiveUSBCreator):
     def extractISO(self):
         """ Extract self.iso to self.dest """
         tmpdir = tempfile.mkdtemp()
-        self.log.info("Extracting ISO to device")
+        #self.log.info("Extracting ISO to device")
+	self.output.write("Extracting ISO to device")
         self.popen('mount -o loop,ro %s %s' % (self.iso, tmpdir))
         try:
             if self.distro == "sidux":
@@ -545,6 +500,13 @@ class LinuxLiveUSBCreator(LiveUSBCreator):
                 self.popen('cp -rf %s/boot %s' % (tmpdir, self.dest))
                 self.popen('rm -rf %s/sidux.iso' % self.dest)
                 self.popen('cp -f %s %s/sidux.iso' % (self.iso, self.dest))
+
+                # copy syslinux files
+                self.path = '%s%s' % (os.getcwd(), '/syslinux/')
+                #if not os.path.isfile('%s/vesamenu.c32' % self.dest):
+                self.popen('cp /usr/share/liveusb-creator/syslinux/vesamenu.c32 %s/' % self.dest)
+                #if not os.path.isfile('%s/splash.jpg' % self.dest):
+                self.popen('cp /usr/share/liveusb-creator/syslinux/splash.jpg %s/' % self.dest)
             else:
                 """ FEDORA """
                 tmpliveos = os.path.join(tmpdir, 'LiveOS')
@@ -567,12 +529,8 @@ class LinuxLiveUSBCreator(LiveUSBCreator):
     def installBootloader(self, force=False, safe=False):
         if self.distro == "sidux":
             """ install the sidux grub """
-            self.log.info("Installing bootloader")
-            #try:
-            #    self.popen('grub-install --recheck --no-floppy --root-directory="%s" "%s"' % 
-            #            (self.tmpdir, self.drive))
-            #except LiveUSBError, e:
-            #    self.log.error("grub-install failed: %s" % str(e))
+            #self.log.info("Installing bootloader")
+	    self.output.write("Installing bootloader")
             try:
                 self.popen('syslinux%s%s -d %s/boot %s' %  (force and ' -f' or ' ',
                     safe and ' -s' or ' ',
@@ -582,7 +540,8 @@ class LinuxLiveUSBCreator(LiveUSBCreator):
 
         else:
             """ Run syslinux to install the FEDORA bootloader on our devices """
-            self.log.info("Installing bootloader")
+            #self.log.info("Installing bootloader")
+	    self.output.write("Installing bootloader")
             shutil.move(os.path.join(self.dest, "isolinux"),
                         os.path.join(self.dest, "syslinux"))
             os.unlink(os.path.join(self.dest, "syslinux", "isolinux.cfg"))
@@ -605,7 +564,8 @@ class LinuxLiveUSBCreator(LiveUSBCreator):
 
     def terminate(self):
         import signal
-        self.log.info("Cleaning up...")
+        #self.log.info("Cleaning up...")
+	self.output.write("Cleaning up...")
         for pid in self.pids:
             try:
                 os.kill(pid, signal.SIGHUP)
@@ -646,14 +606,18 @@ class WindowsLiveUSBCreator(LiveUSBCreator):
             raise LiveUSBError("Make sure your USB key is plugged in and "
                                "formatted with the FAT filesystem")
         if vol[-1] not in ('FAT32', 'FAT'):
-            raise LiveUSBError("Unsupported filesystem: %s\nPlease backup and "
-                               "format your USB key with the FAT filesystem." %
+            raise LiveUSBError("Unsupported filesystem: %s\nPlease backup, "
+                               "format your USB key with the FAT filesystem\n"
+                               "and set a Partitionlabel.\n"
+                               "CODE: mkfs.vfat -n SIDUX /dev/sdXX\n"
+                               "pull and replug the device ..." %
                                vol[-1])
         self.fstype = 'vfat'
         if vol[0] == '':
             try:
                 win32file.SetVolumeLabel(self.drive, self.label)
-                self.log.info("Set label on %s to %s" % (self.drive,self.label))
+                #self.log.info("Set label on %s to %s" % (self.drive,self.label))
+		self.output.write("Set label on %s to %s" % (self.drive,self.label))
             except pywintypes.error, e:
                 self.log.warning("Unable to SetVolumeLabel: " + str(e))
                 self.label = None
@@ -669,43 +633,58 @@ class WindowsLiveUSBCreator(LiveUSBCreator):
 
     def extractISO(self):
         """ Extract our ISO with 7-zip directly to the USB key """
-        self.log.info("Extracting ISO to USB device")
-        self.popen('7z x "%s" -x![BOOT] -y -o%s' % (self.iso, self.drive))
+        #self.log.info("Extracting ISO to USB device")
+	self.output.write("Extracting ISO to USB device")
+
+        # Extract sidux boot dir
+        self.popen('7z x "%s" -x![BOOT] -x!sidux -x!boot/message \
+                    -x!boot/memtest86+.bin \
+                    -x!boot/grub -x!md5sums -y -o%s' % (self.iso, self.drive))
+
+        try:
+            self.isosize = ( int( os.path.getsize(self.iso) ) / 1000000 ) + 1
+        except:
+            self.isosize = 1600
+
+        # if sidux copy sidux iso to boot from cheatcode fromiso
+        self.popen('dd if="%s" of=%s/sidux.iso count=%s bs=1M'
+                        % (self.iso, self.drive, self.isosize))
+
+        # copy syslinux files
+        #self.path = '%s%s' % (os.getcwd().replace("\\","/"), '/syslinux/*')
+        self.path = '%s%s' % (os.getcwd(), '/syslinux/')
+        #if not os.path.isfile('%s/vesamenu.c32' % self.drive):
+        self.popen('cp "%s"/vesamenu.c32 %s/' % (self.path, self.drive))
+        #if not os.path.isfile('%s/splash.jpg' % self.drive):
+        self.popen('cp "%s"/splash.jpg %s/' % (self.path, self.drive))
+
 
     def installBootloader(self, force=False, safe=False):
         """ Run syslinux to install the bootloader on our devices """
-        self.log.info("Installing bootloader")
-        if os.path.isdir(os.path.join(self.drive + os.path.sep, "syslinux")):
-            syslinuxdir = os.path.join(self.drive + os.path.sep, "syslinux")
-            # Python for Windows is unable to delete read-only files, and some
-            # may exist here if the LiveUSB stick was created in Linux
-            for f in os.listdir(syslinuxdir):
-                os.chmod(os.path.join(syslinuxdir, f), 0777)
-            shutil.rmtree(syslinuxdir)
-        shutil.move(os.path.join(self.drive + os.path.sep, "isolinux"),
-                    os.path.join(self.drive + os.path.sep, "syslinux"))
-        os.unlink(os.path.join(self.drive + os.path.sep, "syslinux",
-                               "isolinux.cfg"))
-        self.popen('syslinux%s%s -m -a -d %s %s' %  (force and ' -f' or ' ',
-                   safe and ' -s' or ' ',
-                   os.path.join(self.drive + os.path.sep, 'syslinux'),
-                   self.drive))
+        #self.log.info("Installing bootloader")
+	self.output.write("Installing bootloader")
+        try:
+            self.popen('syslinux%s%s -d %s/boot %s' %  (force and ' -f' or ' ',
+                safe and ' -s' or ' ',
+                self.dest, self.drive))
+        except LiveUSBError, e:
+            self.log.error("syslinux-install failed: %s" % str(e))
 
     def _getDeviceUUID(self, drive):
         """ Return the UUID of our selected drive """
         uuid = None
         try:
             import win32com.client
-            wmi = win32com.client.GetObject("winmgmts:")
-            result = wmi.ExecQuery('SELECT VolumeSerialNumber FROM '
-                                   'Win32_LogicalDisk WHERE Name="%s"' %
-                                   self.drive)
-            if result and len(result):
-                serial = str(result[0].Properties_("VolumeSerialNumber"))
-                if uuid == 'None':
-                    uuid = None
-                else:
-                    uuid = serial[:4] + '-' + serial[4:]
+            uuid = win32com.client.Dispatch("WbemScripting.SWbemLocator") \
+                         .ConnectServer(".", "root\cimv2") \
+                         .ExecQuery("Select VolumeSerialNumber from "
+                                    "Win32_LogicalDisk where Name = '%s'" %
+                                    drive)[0].VolumeSerialNumber
+            if uuid == 'None':
+                uuid = None
+            else:
+                uuid = uuid[:4] + '-' + uuid[4:]
+            self.log.debug("Found UUID %s for %s" % (uuid, drive))
         except Exception, e:
             self.log.warning("Exception while fetching UUID: %s" % str(e))
         return uuid
@@ -718,7 +697,7 @@ class WindowsLiveUSBCreator(LiveUSBCreator):
         if not os.path.exists(tool):
             raise LiveUSBError("Cannot find '%s'.  Make sure to extract the "
                                "entire liveusb-creator zip file before running "
-                               "this program.")
+                               "this program." % tool)
         return LiveUSBCreator.popen(self, ' '.join([tool] + cmd[1:]),
                                     creationflags=win32process.CREATE_NO_WINDOW)
 

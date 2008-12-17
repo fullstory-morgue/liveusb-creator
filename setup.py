@@ -4,7 +4,7 @@ from distutils.core import setup
 def install(**kwargs):
     kwargs['name'] = 'liveusb-creator'
     kwargs['description']  = 'installing live operating systems on to USB flash drives'
-    kwargs['version']      = '0.0.1'
+    kwargs['version']      = '0.0.9'
     kwargs['author']       = 'Horst Tritremmel'
     kwargs['author_email'] = 'hjt@sidux.com'
     kwargs['url']          = 'http://sidux.com'
