@@ -1,3 +1,9 @@
+liveusb-creator (0.0.9) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 17 Dec 2008 01:40:58 +0100
+
 liveusb-creator (0.0.8) unstable; urgency=low
 
   * remove toram cheat if persist is enabled
