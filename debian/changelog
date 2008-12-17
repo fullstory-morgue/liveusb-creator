@@ -1,9 +1,5 @@
-liveusb-creator (0.0.8) UNRELEASED; urgency=low
+liveusb-creator (0.0.8) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Horst Tritremmel ]
   * remove toram cheat if persist is enabled
   * vga=788 cheat info for netbook users added 
   * new splash.jpg for syslinux 
