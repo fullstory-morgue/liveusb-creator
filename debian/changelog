@@ -1,9 +1,5 @@
-liveusb-creator (0.0.9) UNRELEASED; urgency=low
+liveusb-creator (0.0.9) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Horst Tritremmel ]
   * same code for sidux and exe in gui.py and creator.py now 
 
  -- Horst Tritremmel <hjt@sidux.com>  Wed, 17 Dec 2008 11:35:38 +0100
