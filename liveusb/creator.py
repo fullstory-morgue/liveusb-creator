@@ -343,7 +343,10 @@ menu color cmdline 0 #ffffffff #00000000\n\
         out.close()
 
     def getReleases(self):
-        return [release['name'] for release in releases]
+        try:
+            return [release['name'] for release in releases]
+        except:
+            return ['no Internetconnection']
 
     def existingLiveOS(self):
         return os.path.exists(self.getLiveOS())
