@@ -199,7 +199,7 @@ class LiveUSBCreator(object):
             else:
                 self.popen('dd if=/dev/zero of=%s count=1 bs=1M seek=%d'
                            % (self.getOverlay(), self.overlay))
-            
+
             if self.distro == "sidux":
                 import sys
                 if sys.platform[:3].lower() == "win":
@@ -403,19 +403,19 @@ class LinuxLiveUSBCreator(LiveUSBCreator):
 
         for device in devices:
             dev = self._getDevice(device)
-            if force or dev.GetProperty("storage.bus") == "usb" and \
-               dev.GetProperty("storage.removable"):
-                if dev.GetProperty("block.is_volume"):
+            if force or dev.GetProperty("storage.bus") == "usb": #and \
+               #dev.GetProperty("storage.removable"):
+               if dev.GetProperty("block.is_volume"):
                     self._addDevice(dev)
                     continue
-                else: # iterate over children looking for a volume
+               else: # iterate over children looking for a volume
                     children = self.hal.FindDeviceStringMatch("info.parent",
                                                               device)
                     for child in children:
                         child = self._getDevice(child)
                         if child.GetProperty("block.is_volume"):
                             self._addDevice(child)
-                            break
+                            #break
 
         if not len(self.drives):
             raise LiveUSBError("Unable to find any USB drives")
