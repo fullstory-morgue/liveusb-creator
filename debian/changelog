@@ -1,8 +1,9 @@
-liveusb-creator (0.0.12) UNRELEASED; urgency=low
+liveusb-creator (0.0.12) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * switch from dh_clean -k to dh_prep, to become compliant with debhelper 7 
+    and to make lintian happy.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 27 Jan 2009 16:08:23 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 27 Jan 2009 17:04:38 +0100
 
 liveusb-creator (0.0.11) unstable; urgency=low
 
