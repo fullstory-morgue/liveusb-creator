@@ -1,9 +1,5 @@
-liveusb-creator (0.0.11) UNRELEASED; urgency=low
+liveusb-creator (0.0.11) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Horst Tritremmel ]
   * allow usb harddisk
 
  -- Horst Tritremmel <hjt@sidux.com>  Thu, 15 Jan 2009 14:00:51 +0100
