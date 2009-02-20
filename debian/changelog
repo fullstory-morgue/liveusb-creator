@@ -1,8 +1,9 @@
-liveusb-creator (0.0.13) UNRELEASED; urgency=low
+liveusb-creator (0.0.13) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * fix desktop-entry-contains-encoding-key.
+  * clarify licensing.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 27 Jan 2009 17:06:35 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 20 Feb 2009 16:11:46 +0100
 
 liveusb-creator (0.0.12) unstable; urgency=low
 
