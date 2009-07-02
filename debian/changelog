@@ -4,9 +4,10 @@ liveusb-creator (0.0.14) UNRELEASED; urgency=low
   * NOT RELEASED YET
 
   [ Bernard Gray ]
-  * update art for 2009-02 -- do not release
+  * update art for 2009-02 
+  * add source for header artwork -- do not release
 
- -- Bernard Gray <bernard.gray@gmail.com>  Thu, 02 Jul 2009 19:00:34 +1000
+ -- Bernard Gray <bernard.gray@gmail.com>  Thu, 02 Jul 2009 19:29:46 +1000
 
 liveusb-creator (0.0.13) unstable; urgency=low
 
