@@ -72,10 +72,15 @@ create-icons:
 				$(CURDIR)/icons/liveusb-creator.svg ; \
 	done
 	
+	# create header artwork from svg
+	mkdir -p "data/pixmaps"
+	inkscape --export-png="$(CURDIR)/data/pixmaps/liveusb-creator-header.png" \
+		"$(CURDIR)/data/liveusb-creator-header.svg"
 	# create XPM icons for the debian menu system
 	mkdir -p icons/pixmaps
 	convert icons/hicolor/32x32/apps/liveusb-creator.png icons/pixmaps/liveusb-creator.xpm
 	convert icons/hicolor/16x16/apps/liveusb-creator.png icons/pixmaps/liveusb-creator-16.xpm
+	convert icons/hicolor/16x16/apps/liveusb-creator.png data/pixmaps/liveusb-creator-16.xpm
 
 binary: binary-indep binary-arch
 .PHONY: build install clean binary-arch binary-indep binary
