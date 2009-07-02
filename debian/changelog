@@ -7,9 +7,12 @@ liveusb-creator (0.0.14) UNRELEASED; urgency=low
   * update art for 2009-02 
   * add source for header artwork
   * update rules for header artwork
-  * update rules for liveusb-creator-16.xpm in data/pixmaps/  -- do not release
+  * update rules for liveusb-creator-16.xpm in data/pixmaps/ 
+  * convert all bitmaps to new svg art
+  * update copyright for new art -- do not release
 
- -- Bernard Gray <bernard.gray@gmail.com>  Thu, 02 Jul 2009 19:39:36 +1000
+
+ -- Bernard Gray <bernard.gray@gmail.com>  Thu, 02 Jul 2009 20:43:46 +1000
 
 liveusb-creator (0.0.13) unstable; urgency=low
 
