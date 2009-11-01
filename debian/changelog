@@ -1,3 +1,9 @@
+liveusb-creator (0.0.17) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 01 Nov 2009 14:49:02 +0100
+
 liveusb-creator (0.0.16) unstable; urgency=low
 
   * assume interims maintenance.
