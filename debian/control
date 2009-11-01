@@ -1,13 +1,12 @@
 Source: liveusb-creator
 Section: admin
 Priority: extra
-Maintainer: Horst Tritremmel <hjt@sidux.com>
-Uploaders: Stefan Lippers-Hollmann <s.l-h@gmx.de>
+Maintainer: Stefan Lippers-Hollmann <s.l-h@gmx.de>
 Build-Depends: debhelper (>= 7),
  python (>=2.4),
  python-all-dev (>=2.4),
  python-central (>=0.5)
-Standards-Version: 3.8.2
+Standards-Version: 3.8.3
 XS-Python-Version: current
 
 Package: liveusb-creator

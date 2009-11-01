@@ -1,8 +1,9 @@
-liveusb-creator (0.0.16) UNRELEASED; urgency=low
+liveusb-creator (0.0.16) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * assume interims maintenance.
+  * bump standards version to 3.8.3, no changes necessary.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 19 Jul 2009 16:10:35 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 01 Nov 2009 14:48:13 +0100
 
 liveusb-creator (0.0.15) unstable; urgency=low
 
