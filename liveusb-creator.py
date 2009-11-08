@@ -41,7 +41,7 @@ def main():
     if opts.console:
         from liveusb import LiveUSBCreator
         try:
-            live = LiveUSBCreator()
+            live = LiveUSBCreator(opts)
             live.detectRemovableDrives()
             live.verifyFilesystem()
             live.extractISO()
