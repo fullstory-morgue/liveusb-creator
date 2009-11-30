@@ -1,8 +1,9 @@
-liveusb-creator (0.0.18) UNRELEASED; urgency=low
+liveusb-creator (0.0.18) ORPHANED; urgency=low
 
   * NOT RELEASED YET
+  * ORPHAN PACKAGE
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 08 Nov 2009 02:38:18 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 30 Nov 2009 22:40:23 +0100
 
 liveusb-creator (0.0.17) unstable; urgency=low
 
