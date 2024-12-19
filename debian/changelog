@@ -2,6 +2,7 @@ liveusb-creator (0.0.18) ORPHANED; urgency=low
 
   * NOT RELEASED YET
   * ORPHAN PACKAGE
+  * refresh SVG graphics, shut up inkscape's migration from old versions.
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 30 Nov 2009 22:40:23 +0100
 
